@@ -1,6 +1,6 @@
-package plants;
+package resources;
 
-public class Grass implements Plants{
+public class Grass extends Plants{
 
 	
 	//how many turns until grass regrows
@@ -10,6 +10,14 @@ public class Grass implements Plants{
 	//how may turns grass will last while being eaten
 	private int currentHP;
 	private final int HP=2;
+	
+	public Grass(int x, int y) {
+		setX(x);
+		setY(y);
+		setHP(HP);
+		ManageResources.addResource(this);
+	}
+	
 	
 	@Override
 	public int getRegrowRate() {
@@ -40,4 +48,5 @@ public class Grass implements Plants{
 	public void setCurrentRegrowRate(int regrowRate) {
 		currentRegrowRate = regrowRate;
 	}
+
 }

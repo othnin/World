@@ -5,38 +5,64 @@ import java.util.Iterator;
 import java.util.List;
 
 import animals.Animals;
-import plants.Grass;
-import plants.Plants;
+import resources.Grass;
+import resources.ManageResources;
+import resources.Plants;
+import resources.Resources;
 
 public class Tile {
 	
-	double plantAppear=.15;
-	Terrain typeTerrain;
-	Plants typePlants;
-	List<Animals> typeAnimals = new ArrayList<Animals>();   //tile can have more than one animal in it?
+	//percent chance that a plant is added to that tile
+	double plantAppearStart=.25;
+	double plantAppearRergrow=.01;
 	
+	//move modifier for diaganol movements
+	final double diagMoveModifier = 1.4;
+	
+	Terrain typeTerrain;
+//	Plants typePlants;
+	List<Animals> typeAnimals = new ArrayList<Animals>();   //tile can have more than one animal in it?
+	List<Resources> typeResources = new ArrayList<Resources>();
+	
+	
+	
+	public void regrowPlants(int x, int y) {  //TODO: Need to check if there is more than one grass in the array
+		//if (plantsGrowing(getTerrain())) {
+	//	System.out.println("Tile::regrowPlants");
+		if ((getTerrain().toString() == "Plains") & (Math.random() < getPlantRegrowChance()) & (getPlant() == null)) {	
+			typeResources.add(new Grass(x,y));
+			System.out.println("Added grass to: " + x + "," + y);
+		}
+		
+	}
 	
 	public boolean plantsGrowing(Terrain terrainType) {
-		if (terrainType.toString() == "Plains") {
-			if (Math.random() < plantAppear)
-				return true;
+		if ((terrainType.toString() == "Plains") & (Math.random() < getPlantAppearChance())) {
+			return true;
 		}
 		return false;
 	}
 	
+	public double getPlantAppearChance() {
+		return plantAppearStart;
+	}
 	
-	public Tile(Object object) {
+	public double getPlantRegrowChance() {
+		return plantAppearRergrow;
+	}
+	
+	public Tile(Object object, int x, int y) {
 		typeTerrain = (Terrain) object;
 		if (plantsGrowing(typeTerrain)) {
-			typePlants = new Grass();
+			typeResources.add(new Grass(x,y));
 		}
 	}
 	
-	public Tile(Object object, Object object2) {
+	public Tile(Object object, Object object2, int x, int y) {
 		typeTerrain = (Terrain) object;
 		typeAnimals.add((Animals) object2);
 		if (plantsGrowing(typeTerrain)) {
-			typePlants = new Grass();
+			typeResources.add(new Grass(x,y));
 		}
 	}
 	
@@ -53,9 +79,29 @@ public class Tile {
 	}
 	
 	public Plants getPlant() {
-		return typePlants;
+		for (Resources resource : typeResources ) 
+			if (resource.toString() == "Grass") return (Plants) resource;
+		return null;
 	}
 	
+	public void removePlant(Plants plant) {	
+		Iterator<Resources> iter = typeResources.iterator();
+		while(iter.hasNext()) {
+			Resources resource = iter.next();
+			if (resource == plant) {
+				iter.remove();
+				System.out.println("Removed plant");
+				return;
+			}
+		}
+		
+		/*
+		for (Resources resource : typeResources )
+			if (resource.toString() == "Grass")
+				typeResources.remove(resource);
+			*/	
+	}
+	/*
 	public String getPlantName() {
 		return typePlants.toString();
 	}
@@ -75,6 +121,10 @@ public class Tile {
 	public void setRegrowRate(int rate) {
 		typePlants.setCurrentRegrowRate(rate);
 	}
+	*/
+	public double getDiagMoveModifier() {
+		return diagMoveModifier;
+	}
 	
 	/*
 	public void removeAnimal(Animals animal) {
@@ -91,6 +141,13 @@ public class Tile {
 	
 	public void removeAnimal(Animals animal) {
 		typeAnimals.remove(animal);
+		/*
+		Iterator<Animals> iter = typeAnimals.iterator();
+		while(iter.hasNext()) {
+			Animals iterAnimal = iter.next();
+			if (iterAnimal == animal)
+				iter.remove();
+		}*/
 	}
 	
 	//not sure  I need
@@ -152,6 +209,10 @@ public class Tile {
 	public int getMP(Animals animal) {
 		return animal.getMp();
 	}
+	
+	public int getID(Animals animal) {
+		return animal.getID();
+	}
 	/*
 	public int getMP(Animals animal) {
 		// TODO Auto-generated method stub
@@ -170,4 +231,11 @@ public class Tile {
 	public int getMoveMod() {
 		return typeTerrain.getMoveMod();
 	}
+
+	public Water getWater() {
+		for (Resources resource : typeResources ) 
+			if (resource.toString() == "Water") return (Water) resource;
+		return null;
+	}
 }
+	

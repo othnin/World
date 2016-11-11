@@ -2,7 +2,7 @@ package geography;
 
 public class Plains implements Terrain{
 
-	final int MOVEMODIFIER = 1;
+	final int MOVEMODIFIER = 10;
 	int capacity=4;
 	
 	@Override

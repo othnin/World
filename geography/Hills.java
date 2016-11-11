@@ -2,7 +2,7 @@ package geography;
 
 public class Hills implements Terrain{
 
-	final int MOVEMODIFIER = 3;
+	final int MOVEMODIFIER = 30;
 	int capacity=2;
 	
 	@Override

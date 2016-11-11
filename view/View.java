@@ -95,12 +95,11 @@ public class View {
 		outText.setEditable(false);
 
 		JScrollPane scroller = new JScrollPane(outText);
-		outText.setLineWrap(true);
 		scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		background.add(scroller);
-		theFrame.getContentPane().add(BorderLayout.SOUTH,outText);
-		outText.setText("Output text here");
+		theFrame.getContentPane().add(BorderLayout.SOUTH,scroller);
+		outText.setText("Output text here\n");
 
 		theFrame.pack();
 		theFrame.setVisible(true);
@@ -135,6 +134,6 @@ public class View {
 	}
 
 	public void setTextBox(String msg) {
-		outText.setText(msg);
+		outText.append(msg + "\n");
 	}
 }

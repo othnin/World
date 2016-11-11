@@ -1,11 +1,7 @@
 package animals;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import geography.Map;
-import geography.Tile;
+import java.util.Iterator;
 
 public class ManageAnimals {
 
@@ -21,13 +17,23 @@ public class ManageAnimals {
 	//used by the constructors for the animals to add to the allanimals list.
 	//only reason we are still using this static class is for the static call
 	//from the constructors
+	
 	//TODO: get rid of static class
-	static void addAnimal(Animals animal) {
+	public static void addAnimal(Animals animal) {
 		allAnimals.add(animal);
 	}
 	
-	static void removeAnimal(Animals animal) {
+	public static void removeAnimal(Animals animal) {
 		allAnimals.remove(animal);
+		
+		/*
+		Iterator<Animals> iter = allAnimals.iterator();
+		while (iter.hasNext()) {
+			Animals iterAnimal = iter.next();
+			if (iterAnimal == animal)
+				iter.remove();
+		}
+		*/
 	}
 	
 	

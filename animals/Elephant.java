@@ -3,42 +3,26 @@ package animals;
 public class Elephant extends Herbrivore{
 
 	
-	private final int mp=5;
-	private int currentMp = mp;
-	private boolean herdBehavior=true;
+	private final int elephantMP=50;
+	private boolean elephantHerdBehavior=true;
+	private final int elephantVisionDistance = 5;
 	
 	
 	/**constructor*/
 	public Elephant(int x, int y) {
 		setX(x);
 		setY(y);
+		setMaxMP(elephantMP);
+		setVisionDistance(elephantVisionDistance);
 		ManageAnimals.addAnimal(this);
 	}
 	
-	@Override
-	public int getMp() {
-		return currentMp;
-	}
-	
-	@Override
-	public void setMp(int newMp) {
-		currentMp = newMp;
-	}
-
-	@Override
-	public boolean areHerds() {
-		return herdBehavior;
-	}
 	
 	@Override
 	public String toString() {
 		return "Elephant";
 	}
 
-	@Override
-	public void resetMP() {
-		currentMp = mp;	
-	}
 
 
 }

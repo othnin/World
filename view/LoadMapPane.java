@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -9,6 +10,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
@@ -46,8 +49,8 @@ public class LoadMapPane extends JPanel implements Observer{
 	
 	
 	private static final long serialVersionUID = 6758049210720061999L;
-	private int columnCount = 20;
-    private int rowCount = 20;
+	private int columnCount;
+    private int rowCount;
     private List<Rectangle> cells;
     private Point selectedCell;
     private int xOffset=0;
@@ -56,11 +59,12 @@ public class LoadMapPane extends JPanel implements Observer{
     private View m_view;
     
 
-    //TODO: Still using the static row and column counts instead of getting the info from the model map
     public LoadMapPane(Model model, View view) {
     	m_model = model;
     	m_view = view;
     	m_model.addObserver(this);
+    	columnCount = m_model.getMapSizeX();
+    	rowCount = m_model.getMapSizeY();
     	mouseEvent();
         DrawMap();
     }
@@ -148,7 +152,7 @@ public class LoadMapPane extends JPanel implements Observer{
 							   			      break;
        							default: System.out.println("Error: animal type: " + animalName + " Not found in LoadMapPane draw");
        						}	
-       						System.out.println(animalName + "id: " + animal.getID());
+       						//System.out.println(animalName + "id: " + animal.getID());
        					}
        				} 
        				catch(ConcurrentModificationException e) {  //TODO: Was getting some errors here. Not sure if resolved.
@@ -173,10 +177,12 @@ public class LoadMapPane extends JPanel implements Observer{
             String terrain = m_model.getTerrainType(selectedCell.x, selectedCell.y);
             String animals;
             String plants;
+            int animalID;
             if  (m_model.getAnimals(selectedCell.x, selectedCell.y).isEmpty()) 
             	animals = "None";
             else 
             	animals = m_model.getAnimals(selectedCell.x, selectedCell.y).toString();
+           // 	animalID =  m_model.getAnimals(selectedCell.x, selectedCell.y)).
             if (m_model.getPlant(selectedCell.x, selectedCell.y) == null  )
             	plants = "None";
             else
@@ -184,6 +190,7 @@ public class LoadMapPane extends JPanel implements Observer{
             m_view.setTextBox("(" + selectedCell.x + "," + selectedCell.y + ") Terrain: " + terrain
             			 + ", Animals: " + animals 
             			+ ", Plants: " + plants);
+            selectedCell = null;
         }
         g2d.dispose();
     }
@@ -208,7 +215,21 @@ public class LoadMapPane extends JPanel implements Observer{
 
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		DrawMap();
+		if (arg1 instanceof Model.MsgObj) {
+			try {
+				Method method = arg1.getClass().getMethod("getMsg");
+				method.invoke(arg1);
+				Object msgs = method.invoke(arg1);
+				String message = (String)msgs; 
+				m_view.setTextBox(message);
+				
+				
+			} catch (NoSuchMethodException e) { e.printStackTrace();}
+			  catch (IllegalArgumentException e) { e.printStackTrace();}
+			  catch (IllegalAccessException e) { e.printStackTrace();}
+			  catch (InvocationTargetException e) { e.printStackTrace();}
+		} else
+			DrawMap();
 		
 	}
 }

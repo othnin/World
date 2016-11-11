@@ -7,6 +7,7 @@ import java.io.File;
 
 import models.Model;
 import view.LoadMapPane;
+import view.StatsPane;
 import view.View;
 
 public class Controller {
@@ -28,8 +29,10 @@ public class Controller {
 		
 		startBtnActionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
-				if (mapLoaded)
-					m_model.startSimulation();
+				if (mapLoaded) {
+					StatsPane statPage = new StatsPane(m_model);
+					m_model.startSimulation();					
+				}
 				else
 					System.out.println("Error: Need to load a map");					
 			}
@@ -45,6 +48,10 @@ public class Controller {
 			
 		loadFileMapActionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
+				if (mapLoaded) {
+					System.out.println("Map already loaded, TODO: Make a remove map option");
+					return;
+				}
 				File fl = view.displayLoadFile();
 				m_model.readMapFile(fl.getAbsolutePath());
 				mapLoaded = true;
